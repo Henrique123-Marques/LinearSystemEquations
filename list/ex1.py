@@ -6,8 +6,8 @@ dos diretos: (i) de Cramer, (ii) eliminação de Gauss e (iii) decomposição A 
 import numpy as np
 
 #Matria A e vetor b
-A = np.array([[2,1,-1], [-3,-1,2], [-2,1,2]])
-b = np.array([8, -11, -3])
+A = np.array([[2,1,-1], [-3,-1,2], [-2,1,2]], dtype=float)
+b = np.array([8, -11, -3], dtype=float)
 
 #Determinante inicial de A
 det_A = np.linalg.det(A)
@@ -38,12 +38,9 @@ else:
 
 
 #CODIGO ELIMINACAO DE GAUSS
-A2 = np.array([[2,1,-1], [-3,-1,2], [-2,1,2]], dtype = float)
-b2 = np.array([8,-11,-3], dtype=float)
-
 #Criacao da Matriz aumentada
-n = len(b2)
-aumentada = np.hstack((A2, b2.reshape(-1,1)))
+n = len(b)
+aumentada = np.hstack((A, b.reshape(-1,1)))
 
 #Metodo eliminacao de Gauss
 for i in range(n):
@@ -65,3 +62,20 @@ x = np.zeros(n)
 for i in range(n - 1, -1, -1):
 	x[i] = aumentada[i, -1] - np.dot(aumentada[i, i + 1:n], x[i + 1:n])
 print(f'Solucao: x = {x[0]:.2f}, y= {x[1]:.2f}, z = {x[2]:.2f}')
+
+#CODIGO DECOMPOSICAO A = LU, L = LOWER AND U = UPPER
+from scipy.linalg import lu
+#Decomposicao LU
+P, L, U = lu(A) #P é a matriz de permutacao (pivotamento)
+
+#Resolver Ly = Pb (com pivotamento)
+b_permutado = np.dot(P,b) #Ajustar o vetor b conforme a permutacao
+y = np.zeros_like(b)
+for i in range(len(b)):
+	y[i] = b_permutado[i] - np.dot(L[i, :i], y[:i])
+
+x = np.zeros_like(b)
+for i in range(len(b) -1, -1, -1):
+	x[i] = (y[i] - np.dot(U[i,i + 1:], x[i + 1:])) / U[i, i]
+
+print(f'Solucao: x = {x[0]:.2f}, y = {x[1]:.2f}, z = {x[2]:.2f}')
