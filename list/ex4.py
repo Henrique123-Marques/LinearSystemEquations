@@ -25,4 +25,4 @@ for k in range(max_iteracoes):
 		print(f'O sistema convergiu após {k+1} iterações')
 		break
 	x_jacobi = x_novo.copy()
-print(f'Solução pelo Método de Jacobi: x1 = {x_jacobi[0]:.4f}, x2 = {x_jacobi[1]:.4f}, x3 = {x_jacobi[2]:.4f}')
+print(f'Solução pelo Método de Jacobi: x1 = {x_jacobi[0]:.2f}, x2 = {x_jacobi[1]:.2f}, x3 = {x_jacobi[2]:.2f}')
