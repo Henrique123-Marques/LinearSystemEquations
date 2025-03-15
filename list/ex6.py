@@ -5,7 +5,7 @@ b = np.array([5,6,0], dtype=float)
 
 #Parametros
 n = len(b)
-x0 = np.array([0,0,0], dtype=float) #Aproximacao iniciaç
+x0 = np.array([0,0,0], dtype=float) #Aproximacao inicial
 tolerancia = 0.01
 max_iteracoes = 300
 
