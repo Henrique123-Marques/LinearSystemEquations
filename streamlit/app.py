@@ -1,7 +1,7 @@
 #APRESENTACAO - QUESTAO 6 - LISTA 2
 import streamlit as st
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 # Configuração inicial da página
 st.set_page_config(page_title="Resolução de Sistemas Lineares", layout="wide")
@@ -80,13 +80,6 @@ elif secao == "Resultados":
     st.markdown("""
     Abaixo, exibimos a evolução das soluções aproximadas do método de Gauss-Seidel ao longo das iterações, 
     seguida do resultado final após a convergência.
-    """)
-
-    # Nota sobre o erro do matplotlib
-    st.warning("""
-    **Nota:** Caso ocorra o erro `ModuleNotFoundError` relacionado ao `matplotlib`, 
-    certifique-se de que a biblioteca está instalada no ambiente. Adicione `matplotlib` ao arquivo 
-    `requirements.txt` ou execute `pip install matplotlib` no terminal antes de rodar o aplicativo.
     """)
 
     # Exibindo o código de definição do sistema
@@ -200,7 +193,7 @@ elif secao == "Resultados":
     st.title('Repositório da Lista 2 📦')
     st.markdown('Github: https://github.com/Henrique123-Marques/LinearSystemEquations')
 
-    st.title('Referências Bibliográficas')
+    st.title('Referências Bibliográficas 📘')
     st.markdown("""
         - GROK. . Disponível em: <https://grok.com/>. 🔗
         - STREAMLIT. Disponível em: <https://docs.streamlit.io/>. 🔗
