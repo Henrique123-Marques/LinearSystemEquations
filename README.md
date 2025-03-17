@@ -1,1 +1,1 @@
-# https://question6linearsystemeqlist.streamlit.app/
+https://question6linearsystemcalc.streamlit.app/
