@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib as plt
 
 A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
 b = np.array([5,6,0], dtype=float)
@@ -26,3 +27,5 @@ for k in range(max_iteracoes):
 		break
 
 print(f'Solução usando Gauss-Seidel: x1 = {x[0]:.2f}, x2 = {x[1]:.2f}, x3 = {x[2]:.2f}')
+
+#Grafico

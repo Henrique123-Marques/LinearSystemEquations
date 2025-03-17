@@ -1,29 +1,26 @@
 #APRESENTACAO - QUESTAO 6 - LISTA 2
 import streamlit as st
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Configuração inicial da página
 st.set_page_config(page_title="Resolução de Sistemas Lineares", layout="wide")
 
 # Título da apresentação
-st.title("Questão 6 - Método de Gauss-Seidel")
+st.title("📘 Questão 6 - Método de Gauss-Seidel")
 
 # Menu lateral para navegação
-st.sidebar.title("Navegação")
+st.sidebar.title("🧭 Navegação")
 secao = st.sidebar.radio("Escolha a seção:", ["Enunciado", "Metodologia Usada", "Resultados"])
-st.sidebar.header('Site desenvolvido por:\n Henrique Marques Santos Silva;')
-st.sidebar.text('RA: 11202231350; \n Março 2025.')
 
 # Seção 1: Enunciado
 if secao == "Enunciado":
     st.header("ℹ️ Enunciado")
     st.markdown("""
     O objetivo desta análise é resolver o seguinte sistema linear 3x3 utilizando o sofisticado método iterativo de Gauss-Seidel. 
-    Para isso, adotamos como aproximação inicial x_0 = (0, 0, 0) e estabelecemos uma tolerância de 0,01, 
+    Para isso, adotamos como aproximação inicial \( x_0 = (0, 0, 0) \) e estabelecemos uma tolerância de 0,01, 
     garantindo precisão suficiente para as iterações:
     """)
-    
-    # Sistema linear em LaTeX
     st.latex(r"""
     \begin{cases}
     5x_1 + x_2 + x_3 = 5 \\
@@ -80,94 +77,78 @@ resultado do processo iterativo. """)
 
 # Seção 3: Resultados
 elif secao == "Resultados":
-    st.header("📊 Solução obtida")
+    st.header("📊 Resultados Obtidos")
     st.markdown("""
-    A seguir, apresentamos o código utilizado para resolver o sistema linear com o método de Gauss-Seidel, dividido em duas partes para melhor 
-    visualização, seguido de um botão para executar o algoritmo e exibir a solução final.
+    Abaixo, exibimos a evolução das soluções aproximadas do método de Gauss-Seidel ao longo das iterações, 
+    seguida do resultado final após a convergência.
     """)
 
-    # Criando duas colunas para exibir os trechos do código
-    col1, col2 = st.columns(2)
+    # Definindo o sistema e parâmetros
+    A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
+    b = np.array([5,6,0], dtype=float)
+    n = len(b)
+    x0 = np.array([0,0,0], dtype=float)
+    tolerancia = 0.01
+    max_iteracoes = 300
 
-    with col1:
-        st.subheader("Parte 1: Definição do Sistema e Parâmetros")
-        st.code("""
-import numpy as np
+    # Armazenando as soluções aproximadas em cada iteração
+    x = x0.copy()
+    historico_x = [x.copy()]  # Lista para armazenar os valores de x em cada iteração
+    iter_convergencia = max_iteracoes  # Para registrar quando convergiu
 
-A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
-b = np.array([5,6,0], dtype=float)
-
-# Parâmetros
-n = len(b)
-x0 = np.array([0,0,0], dtype=float)  # Aproximação inicial
-tolerancia = 0.01
-max_iteracoes = 300
-        """, language="python")
-
-    with col2:
-        st.subheader("Parte 2: Implementação do Método Gauss-Seidel")
-        st.code("""
-# Método de Gauss-Seidel
-x = x0.copy()
-for k in range(max_iteracoes):
-    x_antigo = x.copy()  # Guardar o valor da iteração anterior
-    for i in range(n):
-        soma = 0
-        for j in range(n):
-            if j != i:
-                soma += A[i,j] * x[j]  # Usa valores atualizados de x
-        x[i] = (b[i] - soma) / A[i,i]   
-
-    # Verificando convergência
-    if np.max(np.abs(x - x_antigo)) < tolerancia:
-        print(f'O sistema convergiu após {k+1} iterações')
-        break
-
-print(f'Solução usando Gauss-Seidel: x1 = {x[0]:.2f}, x2 = {x[1]:.2f}, x3 = {x[2]:.2f}')
-        """, language="python")
-
-    # Botão para executar o código e mostrar a solução
-    st.subheader("Executar o Método e Visualizar a Solução")
-    if st.button("Calcular Solução"):
-        # Definindo o sistema e parâmetros
-        A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
-        b = np.array([5,6,0], dtype=float)
-        n = len(b)
-        x0 = np.array([0,0,0], dtype=float)
-        tolerancia = 0.01
-        max_iteracoes = 300
-
-        # Método de Gauss-Seidel
-        x = x0.copy()
-        for k in range(max_iteracoes):
-            x_antigo = x.copy()
-            for i in range(n):
-                soma = 0
-                for j in range(n):
-                    if j != i:
-                        soma += A[i,j] * x[j]
-                x[i] = (b[i] - soma) / A[i,i]
-            if np.max(np.abs(x - x_antigo)) < tolerancia:
-                st.success(f"O sistema convergiu após {k+1} iterações!")
-                break
+    # Método de Gauss-Seidel com histórico
+    for k in range(max_iteracoes):
+        x_antigo = x.copy()
+        for i in range(n):
+            soma = 0
+            for j in range(n):
+                if j != i:
+                    soma += A[i,j] * x[j]
+            x[i] = (b[i] - soma) / A[i,i]
+        historico_x.append(x.copy())  # Adiciona o novo valor ao histórico
         
-        # Exibindo a solução
-        st.markdown(f"""
-        **Solução usando Gauss-Seidel:**  
-        \( x_1 = {x[0]:.2f} \)  
-        \( x_2 = {x[1]:.2f} \)  
-        \( x_3 = {x[2]:.2f} \)
-        """)
+        # Verificando convergência
+        if np.max(np.abs(x - x_antigo)) < tolerancia:
+            iter_convergencia = k + 1
+            st.success(f"O sistema convergiu após {iter_convergencia} iterações!")
+            break
 
-        st.title('Repositório da Lista 2')
-        st.markdown('Github: https://github.com/Henrique123-Marques/LinearSystemEquations')
+    # Convertendo o histórico para um array numpy para facilitar o plot
+    historico_x = np.array(historico_x)
 
-        st.title('Referências Bibliográficas')
-        st.markdown("""
-        - GROK. . Disponível em: <https://grok.com/>. Acesso em: 16 mar. 2025.
+    # Criando o gráfico de sequências de soluções aproximadas
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(historico_x[:, 0], label=r"$x_1$", marker="o")
+    ax.plot(historico_x[:, 1], label=r"$x_2$", marker="s")
+    ax.plot(historico_x[:, 2], label=r"$x_3$", marker="^")
+    ax.set_xlabel("Iteração")
+    ax.set_ylabel("Valor")
+    ax.set_title("Evolução das Soluções Aproximadas - Método de Gauss-Seidel")
+    ax.legend()
+    ax.grid(True)
 
-        - STREAMLIT. Disponível em: <https://docs.streamlit.io/>. Acesso em: 16 mar. 2025.
+    # Exibindo o gráfico no Streamlit
+    st.pyplot(fig)
 
-        - BURDEN, Richard L.; FAIRES, J. Douglas. **Numerical Analysis**. 10. ed. Boston: Cengage Learning, 2016.
+    # Exibindo a solução final
+    st.markdown(f"""
+    **Solução Final usando Gauss-Seidel:**  
+    \( x_1 = {x[0]:.2f} \)  
+    \( x_2 = {x[1]:.2f} \)  
+    \( x_3 = {x[2]:.2f} \)
+    """)
+
+    st.title('Repositório da Lista 2 📦')
+    st.markdown('Github: https://github.com/Henrique123-Marques/LinearSystemEquations')
+
+    st.title('Referências Bibliográficas')
+    st.markdown("""
+        - GROK. . Disponível em: <https://grok.com/>. 🔗
+
+        - STREAMLIT. Disponível em: <https://docs.streamlit.io/>. 🔗
+
+        - BURDEN, Richard L.; FAIRES, J. Douglas. **Numerical Analysis**. 10. ed. Boston: Cengage Learning, 2016. 
+
+        - CORRÊA. Rejane Izabel Lima.; FREITAS. Rafael de Oliveira.; VAZ. Patricia Machado Sebajos. **Cálculo Númerico**. sagah, 2019. 
 
 """)
