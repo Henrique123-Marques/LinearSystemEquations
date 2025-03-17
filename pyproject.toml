@@ -8,5 +8,4 @@ dependencies = [
     "numpy>=2.2.3",
     "scipy>=1.15.2",
     "streamlit>=1.43.1",
-    "matplotlib>=3.10.1",
 ]
