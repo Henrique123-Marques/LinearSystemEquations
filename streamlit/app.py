@@ -12,6 +12,7 @@ st.title("📘 Questão 6 - Método de Gauss-Seidel")
 # Menu lateral para navegação
 st.sidebar.title("🧭 Navegação")
 secao = st.sidebar.radio("Escolha a seção:", ["Enunciado", "Metodologia Usada", "Resultados"])
+st.sidebar.markdown('Desenvolvido por Henrique Marques Santos Silva;')
 
 # Seção 1: Enunciado
 if secao == "Enunciado":
