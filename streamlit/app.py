@@ -1,7 +1,7 @@
 #APRESENTACAO - QUESTAO 6 - LISTA 2
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 # Configuração inicial da página
 st.set_page_config(page_title="Resolução de Sistemas Lineares", layout="wide")
@@ -83,6 +83,9 @@ elif secao == "Resultados":
     seguida do resultado final após a convergência.
     """)
 
+    # Importando Plotly
+    import plotly.graph_objects as go
+
     # Exibindo o código de definição do sistema
     st.markdown("### Código de Definição do Sistema")
     st.code("""
@@ -98,90 +101,49 @@ elif secao == "Resultados":
     # Exibindo o código do método de Gauss-Seidel
     st.markdown("### Implementação do Método de Gauss-Seidel")
     st.code("""
-    # Armazenando as soluções aproximadas em cada iteração
     x = x0.copy()
-    historico_x = [x.copy()]  # Lista para armazenar os valores de x em cada iteração
-    iter_convergencia = max_iteracoes  # Para registrar quando convergiu
-
-    # Método de Gauss-Seidel com histórico
+    historia_x = [x.copy()]  # Lista para armazenar a evolução de x
     for k in range(max_iteracoes):
-        x_antigo = x.copy()
+        x_antigo = x.copy() # Guardar o valor da iteração anterior
         for i in range(n):
             soma = 0
             for j in range(n):
                 if j != i:
-                    soma += A[i,j] * x[j]
-            x[i] = (b[i] - soma) / A[i,i]
-        historico_x.append(x.copy())  # Adiciona o novo valor ao histórico
-        
+                    soma += A[i,j] * x[j] # Usa valores atualizados de x
+            x[i] = (b[i] - soma) / A[i,i]   
+        historia_x.append(x.copy())  # Armazena o novo x
         # Verificando convergência
         if np.max(np.abs(x - x_antigo)) < tolerancia:
-            iter_convergencia = k + 1
-            st.success(f"O sistema convergiu após {iter_convergencia} iterações!")
+            print(f'O sistema convergiu após {k+1} iterações')
             break
-    """, language="python")
-
-    # Exibindo o código de plotagem
-    st.markdown("### Código de Visualização Gráfica")
-    st.code("""
-    # Convertendo o histórico para um array numpy para facilitar o plot
-    historico_x = np.array(historico_x)
-
-    # Criando o gráfico de sequências de soluções aproximadas
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(historico_x[:, 0], label=r"$x_1$", marker="o")
-    ax.plot(historico_x[:, 1], label=r"$x_2$", marker="s")
-    ax.plot(historico_x[:, 2], label=r"$x_3$", marker="^")
-    ax.set_xlabel("Iteração")
-    ax.set_ylabel("Valor")
-    ax.set_title("Evolução das Soluções Aproximadas - Método de Gauss-Seidel")
-    ax.legend()
-    ax.grid(True)
-
-    # Exibindo o gráfico no Streamlit
-    st.pyplot(fig)
     """, language="python")
 
     # Executando o código para mostrar os resultados
     A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
     b = np.array([5,6,0], dtype=float)
+
+    # Parâmetros
     n = len(b)
-    x0 = np.array([0,0,0], dtype=float)
+    x0 = np.array([0,0,0], dtype=float)  # Aproximação inicial
     tolerancia = 0.01
     max_iteracoes = 300
 
+    # Método de Gauss-Seidel com histórico
     x = x0.copy()
-    historico_x = [x.copy()]
-    iter_convergencia = max_iteracoes
-
+    historia_x = [x.copy()]  # Lista para armazenar a evolução de x
     for k in range(max_iteracoes):
-        x_antigo = x.copy()
+        x_antigo = x.copy()  # Guardar o valor da iteração anterior
         for i in range(n):
             soma = 0
             for j in range(n):
                 if j != i:
-                    soma += A[i,j] * x[j]
-            x[i] = (b[i] - soma) / A[i,i]
-        historico_x.append(x.copy())
-        
+                    soma += A[i,j] * x[j]  # Usa valores atualizados de x
+            x[i] = (b[i] - soma) / A[i,i]   
+        historia_x.append(x.copy())  # Armazena o novo x
+        # Verificando convergência
         if np.max(np.abs(x - x_antigo)) < tolerancia:
-            iter_convergencia = k + 1
-            st.success(f"O sistema convergiu após {iter_convergencia} iterações!")
+            st.write(f'O sistema convergiu após {k+1} iterações')
             break
-
-    historico_x = np.array(historico_x)
-
-    # Plotagem (assumindo que matplotlib está disponível)
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.plot(historico_x[:, 0], label=r"$x_1$", marker="o")
-    ax.plot(historico_x[:, 1], label=r"$x_2$", marker="s")
-    ax.plot(historico_x[:, 2], label=r"$x_3$", marker="^")
-    ax.set_xlabel("Iteração")
-    ax.set_ylabel("Valor")
-    ax.set_title("Evolução das Soluções Aproximadas - Método de Gauss-Seidel")
-    ax.legend()
-    ax.grid(True)
-    st.pyplot(fig)
 
     # Exibindo a solução final
     st.markdown(f"""
@@ -191,13 +153,34 @@ elif secao == "Resultados":
     \( x_3 = {x[2]:.2f} \)
     """)
 
+    # Criando o gráfico com Plotly
+    iteracoes = list(range(len(historia_x)))
+    x1_vals = [x[0] for x in historia_x]
+    x2_vals = [x[1] for x in historia_x]
+    x3_vals = [x[2] for x in historia_x]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=iteracoes, y=x1_vals, mode='lines+markers', name='x₁'))
+    fig.add_trace(go.Scatter(x=iteracoes, y=x2_vals, mode='lines+markers', name='x₂'))
+    fig.add_trace(go.Scatter(x=iteracoes, y=x3_vals, mode='lines+markers', name='x₃'))
+    fig.update_layout(
+        title="Evolução das Soluções Aproximadas (Gauss-Seidel)",
+        xaxis_title="Iterações",
+        yaxis_title="Valores de x",
+        template="plotly_white"
+    )
+
+    # Exibindo o gráfico no Streamlit
+    st.plotly_chart(fig)
+
     st.title('Repositório da Lista 2 📦')
     st.markdown('Github: https://github.com/Henrique123-Marques/LinearSystemEquations')
 
     st.title('Referências Bibliográficas 📘')
     st.markdown("""
-        - GROK. . Disponível em: <https://grok.com/>. 🔗
+        - GROK. Disponível em: <https://grok.com/>. 🔗
         - STREAMLIT. Disponível em: <https://docs.streamlit.io/>. 🔗
+        - PLOTLY. Disponível em: <https://plotly.com/python/>. 🔗
         - BURDEN, Richard L.; FAIRES, J. Douglas. **Numerical Analysis**. 10. ed. Boston: Cengage Learning, 2016. 
-        - CORRÊA. Rejane Izabel Lima.; FREITAS. Rafael de Oliveira.; VAZ. Patricia Machado Sebajos. **Cálculo Númerico**. sagah, 2019. 
+        - CORRÊA, Rejane Izabel Lima.; FREITAS, Rafael de Oliveira.; VAZ, Patricia Machado Sebajos. **Cálculo Númerico**. sagah, 2019. 
     """)
