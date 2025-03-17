@@ -75,7 +75,6 @@ Após atualizar todas as variáveis em uma iteração, verifica-se a convergênc
 Por fim, os valores da solução aproximada são exibidos com duas casas decimais, apresentando as variáveis `x1`, `x2` e `x3` como 
 resultado do processo iterativo. """)
 
-# Seção 3: Resultados
 elif secao == "Resultados":
     st.header("📊 Resultados Obtidos")
     st.markdown("""
@@ -83,6 +82,16 @@ elif secao == "Resultados":
     seguida do resultado final após a convergência.
     """)
 
+    # Nota sobre o erro do matplotlib
+    st.warning("""
+    **Nota:** Caso ocorra o erro `ModuleNotFoundError` relacionado ao `matplotlib`, 
+    certifique-se de que a biblioteca está instalada no ambiente. Adicione `matplotlib` ao arquivo 
+    `requirements.txt` ou execute `pip install matplotlib` no terminal antes de rodar o aplicativo.
+    """)
+
+    # Exibindo o código de definição do sistema
+    st.markdown("### Código de Definição do Sistema")
+    st.code("""
     # Definindo o sistema e parâmetros
     A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
     b = np.array([5,6,0], dtype=float)
@@ -90,7 +99,11 @@ elif secao == "Resultados":
     x0 = np.array([0,0,0], dtype=float)
     tolerancia = 0.01
     max_iteracoes = 300
+    """, language="python")
 
+    # Exibindo o código do método de Gauss-Seidel
+    st.markdown("### Implementação do Método de Gauss-Seidel")
+    st.code("""
     # Armazenando as soluções aproximadas em cada iteração
     x = x0.copy()
     historico_x = [x.copy()]  # Lista para armazenar os valores de x em cada iteração
@@ -112,7 +125,11 @@ elif secao == "Resultados":
             iter_convergencia = k + 1
             st.success(f"O sistema convergiu após {iter_convergencia} iterações!")
             break
+    """, language="python")
 
+    # Exibindo o código de plotagem
+    st.markdown("### Código de Visualização Gráfica")
+    st.code("""
     # Convertendo o histórico para um array numpy para facilitar o plot
     historico_x = np.array(historico_x)
 
@@ -129,6 +146,48 @@ elif secao == "Resultados":
 
     # Exibindo o gráfico no Streamlit
     st.pyplot(fig)
+    """, language="python")
+
+    # Executando o código para mostrar os resultados
+    A = np.array([[5,1,1],[3,4,1],[3,3,6]], dtype=float)
+    b = np.array([5,6,0], dtype=float)
+    n = len(b)
+    x0 = np.array([0,0,0], dtype=float)
+    tolerancia = 0.01
+    max_iteracoes = 300
+
+    x = x0.copy()
+    historico_x = [x.copy()]
+    iter_convergencia = max_iteracoes
+
+    for k in range(max_iteracoes):
+        x_antigo = x.copy()
+        for i in range(n):
+            soma = 0
+            for j in range(n):
+                if j != i:
+                    soma += A[i,j] * x[j]
+            x[i] = (b[i] - soma) / A[i,i]
+        historico_x.append(x.copy())
+        
+        if np.max(np.abs(x - x_antigo)) < tolerancia:
+            iter_convergencia = k + 1
+            st.success(f"O sistema convergiu após {iter_convergencia} iterações!")
+            break
+
+    historico_x = np.array(historico_x)
+
+    # Plotagem (assumindo que matplotlib está disponível)
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(historico_x[:, 0], label=r"$x_1$", marker="o")
+    ax.plot(historico_x[:, 1], label=r"$x_2$", marker="s")
+    ax.plot(historico_x[:, 2], label=r"$x_3$", marker="^")
+    ax.set_xlabel("Iteração")
+    ax.set_ylabel("Valor")
+    ax.set_title("Evolução das Soluções Aproximadas - Método de Gauss-Seidel")
+    ax.legend()
+    ax.grid(True)
+    st.pyplot(fig)
 
     # Exibindo a solução final
     st.markdown(f"""
@@ -144,11 +203,7 @@ elif secao == "Resultados":
     st.title('Referências Bibliográficas')
     st.markdown("""
         - GROK. . Disponível em: <https://grok.com/>. 🔗
-
         - STREAMLIT. Disponível em: <https://docs.streamlit.io/>. 🔗
-
         - BURDEN, Richard L.; FAIRES, J. Douglas. **Numerical Analysis**. 10. ed. Boston: Cengage Learning, 2016. 
-
         - CORRÊA. Rejane Izabel Lima.; FREITAS. Rafael de Oliveira.; VAZ. Patricia Machado Sebajos. **Cálculo Númerico**. sagah, 2019. 
-
-""")
+    """)
