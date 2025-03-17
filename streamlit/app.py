@@ -1,7 +1,6 @@
 #APRESENTACAO - QUESTAO 6 - LISTA 2
 import streamlit as st
 import numpy as np
-#import matplotlib.pyplot as plt
 
 # Configuração inicial da página
 st.set_page_config(page_title="Resolução de Sistemas Lineares", layout="wide")
